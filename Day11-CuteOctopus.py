@@ -1,3 +1,4 @@
+from itertools import product
 from functools import lru_cache
 from timeit import default_timer as timer
 
@@ -14,13 +15,9 @@ class OctopusCave:
     def adj(self, i, j):
         """List the adjacent positions in the grid"""
         positions = []
-        for d_i in (-1, 0, 1):
-            x = i + d_i
-            if 0 <= x < 10:
-                for d_j in (-1, 0, 1):
-                    y = j + d_j
-                    if 0 <= y < 10 and (d_i or d_j):
-                        positions.append((x, y))
+        for d_i, d_j in product((-1, 0, 1), repeat=2):
+            if 0 <= i + d_i < 10 and 0 <= j + d_j < 10 and (d_i or d_j):
+                positions.append((i + d_i, j + d_j))
         return positions
 
     def step(self):
@@ -67,7 +64,7 @@ class OctopusCave:
 if __name__ == "__main__":
     start = timer()
     with open("input11.txt") as f:
-        lines = f.read().strip().split()
+        lines = f.readlines()
 
     cave = OctopusCave(lines)
     flashes = cave.progress(100)
@@ -76,4 +73,4 @@ if __name__ == "__main__":
     steps_to_sync = cave.find_sync()
     print(f"It took {steps_to_sync} steps to synchronise all the octopodes.")
 
-    print(f"Solution took {timer() - start:.3}s")  # 5.4ms
+    print(f"Solution took {timer() - start:.3}s")  # 5.6ms
