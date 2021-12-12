@@ -14,11 +14,11 @@ class OctopusCave:
     @lru_cache
     def adj(self, i, j):
         """List the adjacent positions in the grid"""
-        positions = []
-        for d_i, d_j in product((-1, 0, 1), repeat=2):
-            if 0 <= i + d_i < 10 and 0 <= j + d_j < 10 and (d_i or d_j):
-                positions.append((i + d_i, j + d_j))
-        return positions
+        return [
+            (i + d_i, j + d_j)
+            for d_i, d_j in product((-1, 0, 1), repeat=2)
+            if 0 <= i + d_i < 10 and 0 <= j + d_j < 10 and (d_i or d_j)
+        ]
 
     def step(self):
         """Increase and flash some octopodes"""
