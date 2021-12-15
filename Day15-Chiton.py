@@ -1,4 +1,4 @@
-from queue import PriorityQueue
+from heapq import heappush, heappop
 from timeit import default_timer as timer
 
 
@@ -14,11 +14,13 @@ def a_star(adj_func, start, end):
         """
         return pre_weight - sum(a)
 
-    q = PriorityQueue()
-    q.put((eval_point(start), 0, start))
+    heap = [(eval_point(start), 0, start)] # estimated path distance, current path distance, path head
+    # We would check slightly fewer points by inverting the second item here, but the
+    # setup is poor enough that all the negation actually outweighs the benefits.
+
     checked = set() # Set of all points we have tried pathing from
-    while not q.empty():
-        weight, part_sum, last_node = q.get()
+    while heap:
+        weight, part_sum, last_node = heappop(heap)
 
         # Due to ordering, the first time we scan a node will always be the best
         if last_node in checked:
@@ -32,8 +34,9 @@ def a_star(adj_func, start, end):
 
         for target, weight in adj_func(last_node):
             if target not in checked:
-                d = eval_point(target, part_sum + weight)
-                q.put((d, part_sum + weight, target))
+                new_neg_sum = part_sum + weight
+                d = eval_point(target, new_neg_sum)
+                heappush(heap, (d, new_neg_sum, target))
 
     raise ValueError(f"Cannot reach {end} from {start}.")
 
