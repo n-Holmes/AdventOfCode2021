@@ -5,11 +5,11 @@ class BitStream:
     """Wraps a stream of binary data."""
 
     def __init__(self, data, base=16):
-        data = data.strip()  # safety
-
         if base == 16:
             # convert to binary string first
             data = bin(int(data, 16))[2:].rjust(len(data) * 4, "0")
+        elif base != 2:
+            raise ValueError(f"Unsupported base: {base}")
 
         self._bits = (int(c) for c in data)
         self._i = 0
@@ -38,16 +38,14 @@ class Packet:
         self.version = stream.get(3)
         self.type = stream.get(3)
 
-        self.literal_val = 0
+        self.literal_val = None
         self.sub_packets = []
 
         if self.type == 4:
             self.literal_val = self.get_literal(stream)
 
         else:
-            # operator packet
             self.sub_packets = list(self.get_subpackets(stream))
-            # print(f"Operator v{self.version}. {len(self.sub_packets)} sub packets.")
 
     @staticmethod
     def get_literal(stream):
@@ -114,7 +112,7 @@ class Packet:
 if __name__ == "__main__":
     start = timer()
     with open("input16.txt") as f:
-        lines = f.readlines()
+        lines = f.read().splitlines()
 
     for line in lines:
         stream = BitStream(line, 16)
@@ -123,6 +121,6 @@ if __name__ == "__main__":
         print(
             f"Found {packet.tree_size()} total packets with version sum {packet.version_sum()}"
         )
-        print(f"Packet evaluates to", packet.evaluate(), "\n")
+        print(f"Packet evaluates to {packet.evaluate()}\n")
 
-    print(f"Solution took {timer() - start:.3}s to complete.")
+    print(f"Solution took {timer() - start:.3}s to complete.")  # 2.6ms
