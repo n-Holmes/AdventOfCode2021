@@ -102,4 +102,4 @@ if __name__ == "__main__":
     risk = find_path_wrapped(cave_map, 5)
     print(risk)
 
-    print(f"Solution took {timer() - start:.3}s to complete.")
+    print(f"Solution took {timer() - start:.3}s to complete.") # 0.999s
