@@ -124,3 +124,4 @@ if __name__ == "__main__":
         print(f"Packet evaluates to {packet.evaluate()}\n")
 
     print(f"Solution took {timer() - start:.3}s to complete.")  # 2.6ms
+ 
